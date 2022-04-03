@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: X32-OP
+name: X32PRO-OP
 
 on:
   repository_dispatch:
