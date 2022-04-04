@@ -30,7 +30,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: OpenWRT-X32PRO(OP)
+  FILE_NAME: OpenWRT-X32PRO
 
 jobs:
   build:
