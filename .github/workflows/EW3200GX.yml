@@ -147,7 +147,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: OpenWRT-X32(OP) 🚀 | 云编译 / ${{ env.DATE1 }}
+        name: OpenWRT-X32 🚀 | 云编译 / ${{ env.DATE1 }}
         tag_name: ${{ env.RELEASE_TAG }}
         body: |
             ${{ env.useVersionInfo }}
