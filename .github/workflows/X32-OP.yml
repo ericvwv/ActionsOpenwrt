@@ -30,7 +30,7 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: OpenWRT-X32
+  FILE_NAME: OpenWRT~EW3200GX
 
 jobs:
   build:
