@@ -6,9 +6,9 @@
 #
 # https://github.com/P3TERX/Actions-OpenWrt
 # Description: Build OpenWrt using GitHub Actions
-# 1
+#
 
-name: EW3200GX
+name: Build OpenWrt
 
 on:
   repository_dispatch:
@@ -28,9 +28,10 @@ env:
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-  UPLOAD_RELEASE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
-  FILE_NAME: OpenWRT~EW3200GX
 
 jobs:
   build:
@@ -58,27 +59,17 @@ jobs:
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-    - name: Cache
-      uses: klever1988/cachewrtbuild@main
-      with:
-        ccache: 'true'
-        prefix: ${{ github.workspace }}/openwrt
-
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY_P1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
-        useVersionInfo=$(git show -s --date=short --format="编译前的最后一次[➦主源码](https://github.com/ericvwv/openwrt)更新记录:<br/>更新人: %an<br/>更新时间: %cd<br/>更新内容: %s<br/>哈希值: %H")
-        echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
-        echo "DATE=$(date "+%Y-%m-%d-%H:%M:%S")" >> $GITHUB_ENV
-        echo "DATE1=$(date "+%Y.%m.%d")" >> $GITHUB_ENV
     - name: Update feeds
       run: cd openwrt && ./scripts/feeds update -a
 
     - name: Install feeds
-      run: cd openwrt && ./scripts/feeds install -a -f
+      run: cd openwrt && ./scripts/feeds install -a
 
     - name: Load custom configuration
       run: |
@@ -135,6 +126,7 @@ jobs:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
+
     - name: Generate release tag
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
@@ -157,13 +149,13 @@ jobs:
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 1
-        keep_minimum_runs: 4
+        keep_minimum_runs: 3
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
-        keep_latest: 4
+        keep_latest: 3
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
